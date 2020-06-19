@@ -6,7 +6,7 @@ import asyncio
 import argparse
 import shlex
 import subprocess
-
+import logic
 
 
 
@@ -22,21 +22,26 @@ class mainsession(asyncssh.SSHTCPChannel):
 		
 
 async def run_client(port, host, user, passw):
-    async with asyncssh.connect(host, port=port, password=passw, username=user, 
-    							known_hosts=None) as conn:
-    	extrainfo = await conn.get_extra_info(conn.set_extra_info())
+        session = await asyncssh.connect(host, port=port, password=passw, username=user, 
+    							known_hosts=None)
+        
         mainchan = await conn.create_tcp_channel(encoding='utf-8')
         while True:
-        	cmd = 
-        	mainchan.write()
+            logic(mainchan)
 
 
 
-def main()
+def main(args)
 	try:
-    	asyncio.get_event_loop().run_until_complete(run_client())
+    	asyncio.get_event_loop().run_until_complete(run_client(args.port, args.host, args.user, args.passw))
 	except (OSError, asyncssh.Error) as exc:
     	sys.exit('SSH connection failed: ' + str(exc))
 
 if __name__ == "__main__":
+    args = argparse.ArgumentParser()
+    args.add_argument('-p', '--port', dest=port, help='remote port to connect', default=22, type=int)
+    args.add_argument('-n', '--hostname', dest=host, help='hostname or IP Address', type=str)
+    args.add_argument('--pass', dest=passw, help='password to authenticate', type=str)
+    args.add_argument('--user', dest=user, help='username to authenticate', type=str)
+    main(args)
 	#### TO DO: ARGPARSER #####
