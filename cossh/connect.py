@@ -12,12 +12,11 @@ from initialization import *
 
 async def run_client(port, host, user, passw, debug):
     if debug == None:
-       debug = False
-    session_options = await asyncssh.SSHClientConnectionOptions(known_hosts=None, username=user, password=passw) 
-    async with asyncssh.connect(host, port=port, options=session_options) as conn:
-        mainchan, mainsession = await conn.open_session()
-        while True:
-            initialize(mainchan, mainsession, debug)
+       debug = False 
+    async with asyncssh.connect(host, port=port, options=asyncssh.SSHClientConnectionOptions(known_hosts=None, username=user, password=passw)) as mainconn:
+        mainchan, *mainsession = await mainconn.open_session(encoding='utf-8')
+        print(mainchan, mainsession)
+        initialize(mainconn, mainchan, mainsession, debug)
 
 
 def main(args):
