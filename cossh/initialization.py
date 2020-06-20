@@ -11,6 +11,5 @@ def initialize(mainchan, mainsession, debug):
         for key in envdict:
             print(key + ': ', envdict[key])
         print(mainsession.get_write_buffer_size())
-    
     return
     
