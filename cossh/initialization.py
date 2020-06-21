@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
-import asyncssh
 
-
-def initialize(mainconn, mainchan, mainsession, debug):
-    if debug == True:
-        checks = ['username', 'client_version', 'server_version', 
-                    'send_cipher', 'send_mac', 'send_compression', 'recv_cipher', 'recv_mac',
-                    'recv_compression']
-        for item in checks:
-            print(item + ': ' + mainconn.get_extra_info(item))
-        #for key in envdict:
-        #   print(key + ': ', envdict[key])
-    return
+def initialize(mainconn, stdin, stdout, stderr, debug):
+    try:
+        if debug == True:
+            print(mainconn)
+            checks = ['username', 'client_version', 'server_version', 
+                        'send_cipher', 'send_mac', 'send_compression', 'recv_cipher', 'recv_mac',
+                        'recv_compression']
+            for item in checks:
+                print(item + ': ' + mainconn.get_extra_info(item))
+            thethree = [stdin, stdout, stderr]
+            for i in thethree:
+                print(i.channel)
+                for item in checks:
+                    print(item + ': ' + i.get_extra_info(item)) 
+        print('Connection has been success!\n')
+        return
+    except:
+        return
     
