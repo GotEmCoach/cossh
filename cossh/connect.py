@@ -9,15 +9,21 @@ import subprocess
 from initialization import *
 import cossh
 
-
+class mainsession(asyncssh.SSHClientSession):
+    def connection_made(self, chan):
+        print(chan)
+    
+    def data_received(self, data, datatype):
+        print(data)
 
 async def run_client(port, host, user, passw, debug):
     if debug == None:
        debug = False 
     async with asyncssh.connect(host, port=port, options=asyncssh.SSHClientConnectionOptions(known_hosts=None, username=user, password=passw)) as mainconn:
-        stdin, stdout, stderr = await mainconn.open_session(encoding='utf-8')
+        chan, sess = await mainconn.create_session(mainsession)
+        print(chan, sess)
         initialize(mainconn, stdin, stdout, stderr, debug)
-        cossh.main_menu(mainconn, stdin, stdout, stderr, debug)
+        await cossh.main_menu(mainconn, stdin, stdout, stderr, debug)
 
 def main(args):
     try:

@@ -14,7 +14,7 @@ def initialize(mainconn, stdin, stdout, stderr, debug):
                 print(i.channel)
                 for item in checks:
                     print(item + ': ' + i.get_extra_info(item)) 
-        print('Connection has been success!\n')
+        print('Connection has been successfully made!\n')
         return
     except:
         return
