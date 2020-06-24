@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 import asyncio
 from socket import socketpair
-
-def reader(loop, rsock):
-    data = rsock.recv()
-    print(data)
-    loop.remove_reader(rsock)
-    loop.stop()
+import asyncssh
 
 
-def remote_shell(stdin, stdout, stderr, debug):
-    loop = asyncio.get_event_loop()
-    rsock, wsock = socketpair()
-    reader(loop, rsock)
-    loop.add_reader(rsock, reader(loop, rsock))
-    loop.add_writer(wsock, writer(loop, wsock))
+async def remote_shell(initshell, debug):
+    print(initshell.channel)
+    await initshell.redirect(stdin=mywriter, stdout=myreader, stderr=myreader)
+    while True:
+        userin = input
+        mywriter.write(userin)
+
+
+
+
+
+
+class mywriter(asyncssh.SSHSubprocessWritePipe):
+    def __init__(self, SSHProcess, SSHClientStreamSession):
+        super().__init__(SSHProcess, SSHClientStreamSession)
+
+class myreader(asyncssh.SSHSubprocessReadPipe):
+    def __init__(self, SSHProcess, SSHClientStreamSession):
+        super().__init__(SSHProcess, SSHClientStreamSession)
+
     
-
 

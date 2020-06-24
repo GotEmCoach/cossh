@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def initialize(mainconn, stdin, stdout, stderr, debug):
+def initialize(mainconn, debug):
     try:
         if debug == True:
             print(mainconn)
@@ -9,11 +9,6 @@ def initialize(mainconn, stdin, stdout, stderr, debug):
                         'recv_compression']
             for item in checks:
                 print(item + ': ' + mainconn.get_extra_info(item))
-            thethree = [stdin, stdout, stderr]
-            for i in thethree:
-                print(i.channel)
-                for item in checks:
-                    print(item + ': ' + i.get_extra_info(item)) 
         print('Connection has been successfully made!\n')
         return
     except:
