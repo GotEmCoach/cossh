@@ -8,17 +8,21 @@ import shlex
 import subprocess
 from initialization import *
 import cossh
+from socket import socketpair
+
+
 
 class mainsession(asyncssh.SSHClientSession):
     pass
+            
 
 async def run_client(port, host, user, passw, debug):
     if debug == None:
        debug = False 
     async with asyncssh.connect(host, port=port, options=asyncssh.SSHClientConnectionOptions(known_hosts=None, username=user, password=passw)) as mainconn:
-        initshell = await mainconn.create_process()
+        initshell = await mainconn.create_session(mainsession)
         initialize(mainconn, debug)
-        await cossh.main_menu(mainconn, initshell, debug)
+        cossh.main_menu(mainconn, initshell, debug)
 
 def main(args):
     try:
