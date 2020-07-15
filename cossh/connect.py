@@ -13,16 +13,21 @@ from socket import socketpair
 
 
 class mainsession(asyncssh.SSHClientSession):
-    pass
+    def data_received(self, data, datatype):
+        print(data, end='')
+
+    def connection_lost(self, exc):
+        if exc:
+            print('SSH session error: ' + str(exc), file=sys.stderr)
             
 
 async def run_client(port, host, user, passw, debug):
     if debug == None:
        debug = False 
     async with asyncssh.connect(host, port=port, options=asyncssh.SSHClientConnectionOptions(known_hosts=None, username=user, password=passw)) as mainconn:
-        initshell = await mainconn.create_session(mainsession)
-        initialize(mainconn, debug)
-        cossh.main_menu(mainconn, initshell, debug)
+        async with mainconn.create_session(mainsession) as initshell:
+            initialize(mainconn, debug)
+            await cossh.main_menu(mainconn, initshell, debug)
 
 def main(args):
     try:

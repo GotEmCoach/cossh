@@ -6,13 +6,11 @@ import asyncio
 from socket import socketpair
 
 
-def main_menu(mainconn, initshell, debug):
-    rsock, wsock = socketpair()
-    loop = asyncio.get_event_loop()
+async def main_menu(mainconn, initshell, debug):
     choices = {1:'Interact', 2:'Survey', 3:'Tunnels', 4:'Command Logs'}
     selection = choose_me(choices)
     if selection == 1:
-        interactive_menu(initshell, rsock, wsock, loop, debug)
+        await interactive_menu(initshell, debug)
     print(selection)
 
 def choose_me(choices):
@@ -30,11 +28,11 @@ def choose_me(choices):
                 print('\nA number was not selected, Please choose from the menu!!!\n')
 
 
-def interactive_menu(initshell, rsock, wsock, loop, debug):
+async def interactive_menu(initshell, debug):
     choices = {1:'Remote', 2:'Local'}
     selection = choose_me(choices)
     if selection == 1:
-        shell.remote_shell(initshell, rsock, wsock, loop, debug)
+        await shell.remote_shell(initshell, debug)
     elif selection == 2:
         print('todo')
         #local_shell(debug)
